@@ -11,6 +11,7 @@
 	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
 	
 	<link rel="stylesheet" href="main.css" type="text/css">
+	<link rel="stylesheet" href="css/fontello.css" type="text/css">
 
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
 	
@@ -62,7 +63,7 @@
 				</li>
 				<li><a href="quiz.html">Quiz z wiedzy</a></li>
 				<li><a href="">O autorze</a></li>
-				<li><a href=""kontakt.html"">Kontakt</a></li>
+				<li><a href="">Kontakt</a></li>
 			</ul>
 			<div style="clear:both"></div>
 		</nav>
@@ -70,41 +71,38 @@
 	<main>
 		<article>
 			<header>
-				<figure>
-					<div id="welcome-screen"><img src="img/mainpage/welcome.jpg" alt="welcome screen"></div>
-				</figure>
+				<h2> Kontakt </h2>
 			</header>
 			<section>
-				<form action="kurs.html">
-					<input id="begin-course-button" type="submit" value="Rozpocznij kurs" name="Rozpocznij kurs">
-				</form>
-				<div class="main-page-section">
-					<p>Podstawy SQL'a są jedną z rzeczy którą warto poznać jako <b>początkujący tester oprogramowania</b>, lecz także jako developer. Język SQL służy do komunikowania się z bazą danych. Możemy go użyć do wyciągania interesujących nas informacji z bazy, wstawiania tam nowych rekordów czy też porównywania danych. Ten darmowy kurs pomoże oswoić Ci się z podstawami SQL'a a tym którzy już trochę go znają, pozwoli odświeżyć swoją wiedzę. Po skończonym kursie zapraszam również do wypełnienia <b>krótkiego quizu</b>, oferwanego przez naszą stronę w celu usystematyzowania wiedzy!</p>
-				</div>
-				<div id="logos">
-					<div class="logos"><img src="img/logos/oracle-logo.png" alt="Oracle logo"></div>
-					<div class="logos"><img src="img/logos/mysql-logo.png" alt="MySql logo"></div>
-					<div class="logos"><img src="img/logos/sql-server-logo.png" alt="Sql Server logo"></div>
-					<div class="logos"><img src="img/logos/postgresql-logo.png" alt="PostgreSQL logo"></div>
-				</div>
-			</section>
-			<section>
-				<div class="main-page-section">
-					<h3> Czego nauczysz się dzięki tej stronie? </h3>
-					<div class="feature-list">
-						<ul>
-							<li>Podstawowych typów zapytań do bazy danych</li>
-							<li>Funkcji wierszowych</li>
-							<li>Zaawansowanego tworzenia i modyfikacji tabel</li>
-							<li>Grupowania i funkcji agregujących</li>
-							<li>Podzapytań skorelowanych i nieskorelowanych</li>
-							<li>Różnych typów złączeń</li>
-							<li>Tworzenia widoków</li>
-						<ul>
+			<fieldset>
+			<div class="cotact-area"g>
+				<div class="contact-info">
+					<h2> Zapraszam do kontaktu! <h2>
+					<div>
+						<i class="icon-mail">janlubiejewski@outlook.com</i>
+					 </div>
+					<div>
+						<i class="icon-github-circled">https://github.com/J-Lub-debug</i>
 					</div>
-					<p style="text-align:center; font-size: 18px;"> A wszystko to na <b>praktycznych przykładach!</b></p>
+					<div>
+						<i class="icon-phone">534144646</i>
+					</div>
 				</div>
-			</section>
+				<div id="contact-form">
+				<form action="kontakt.html" method="post">
+					</div>
+					<div class="contact-field">
+						<label for="name" style="display:block;">Imię i nazwisko</label>
+						<input type="name" name="name" id="name" required></label>
+						<label for="email" style="display:block;">E-mail</label>
+						<input type="email" name="email" id="email" required></label>
+						<label for="message" style="display:block;">Wiadomość</label>
+						<textarea name="message" id="message" rows="8" cols="80"></textarea>
+						<input id="send-email" type="submit" value="Wyślij" name="send-email">
+					</div>
+				</form>
+			</div>
+			</fieldset>
 		</article>
 	</main>
 

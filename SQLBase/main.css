@@ -21,7 +21,8 @@ h1
 
 h2{
 	margin-bottom: 10px;
-	margin-top: 10px;
+	margin-top: 30px;
+	text-align: center;
 
 }
 
@@ -205,3 +206,26 @@ a:visited{
 	display: block;
 }
 
+/* Contact site related */
+
+.contact-info{
+	float: left;
+}
+
+.contact-field{
+	float: left;
+	margin-top: 20px;
+	margin-left: 60px;
+	padding-left: 60px;
+}
+
+#send-email{
+	margin-top: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	background-color: #16A085;
+	border-color: #16A085;
+	color: #fff;
+	font-size: 18px;
+}
