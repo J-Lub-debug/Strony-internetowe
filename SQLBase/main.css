@@ -229,3 +229,15 @@ a:visited{
 	color: #fff;
 	font-size: 18px;
 }
+
+#send-quiz{
+	margin-top: 30px;
+	margin-bottom: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	background-color: #16A085;
+	border-color: #16A085;
+	color: #fff;
+	font-size: 18px;
+}

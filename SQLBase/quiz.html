@@ -18,7 +18,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 	<![endif]-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-	<script src="jquery.scrollTo.min"></script>
+	<script src="jquery.scrollTo.min.js"></script>
 	
 	<script>
         jQuery(function($){
@@ -35,6 +35,41 @@
         }
         
         );
+		
+		function showAnswers(){
+		
+			//Dictionary of quiz answers
+			const answers = {
+				1: false, 2: true, 3: false,
+				4: false, 5: false, 6: true, 7: false,
+				8: false, 9: false, 10: false, 11: true,
+				12: false, 13: true, 14: false, 15: false,
+				16: true, 17: false, 18: true, 19: false,
+				20: false, 21: false, 22: true, 23: false,
+				24: false, 25: true, 26: false, 27: true,
+				28: false, 29: true, 30: false, 31: false,
+				32: false, 33: false, 34: true, 35: false,
+				36: false, 37: true, 38: false, 39: true	
+			};
+			
+			let checked = $("input:checked"); //Array of all checked inputs
+			
+			//+Add crossing outline
+			//+Add clear all answers on next clicks
+			
+			//Marks answers only for the checked inputs
+			for(let i = 0; i < checked.length; i++){
+			
+				if(answers[$(checked[i]).prop("value")] == true){ // answers[checked.value] 
+
+					$(checked[i]).parent().css({ 'color': 'green'}); //get parent (label that encloses input) and set its Css
+				}
+				else{
+					$(checked[i]).parent().css({ 'color': 'red'});
+				}
+			}
+			
+		}
     
     </script>
 
@@ -70,76 +105,77 @@
 	</header>
 	<main>
 		<article>
-			<form action="kurs.html" method="post">
+			<form> <!--<form action="" method="post"> -->
 				<fieldset class="quiz-questions">
-					<h4>1. Rozwiń skrót SQL<h4>
+					<h4>1. Rozwiń skrót SQL</h4>
 					<label><input type="radio" value="1" name="choice1">Strong Question Language</label>
 					<label><input type="radio" value="2" name="choice1">Structured Query Language</label>
 					<label><input type="radio" value="3" name="choice1">Structured Question Language</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>2. Jakiego polecenia używamy do wybierania informacji z tabeli?<h4>
+					<h4>2. Jakiego polecenia używamy do wybierania informacji z tabeli?</h4>
 					<label><input type="radio" value="4" name="choice2">EXTRACT</label>
 					<label><input type="radio" value="5" name="choice2">GET</label>
 					<label><input type="radio" value="6" name="choice2">SELECT</label>
 					<label><input type="radio" value="7" name="choice2">OPEN</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>3. Jakiego polecenia użyjesz do zaktualizowania danych wartości w kolumnie? <h4>
+					<h4>3. Jakiego polecenia użyjesz do zaktualizowania danych wartości w kolumnie? </h4>
 					<label><input type="radio" value="8" name="choice3">ALTER</label>
 					<label><input type="radio" value="9" name="choice3">MODIFY</label>
 					<label><input type="radio" value="10" name="choice3">SAVE</label>
 					<label><input type="radio" value="11" name="choice3">UPDATE</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>4. Jak brzmi polecenie do usunięcia wiersza z tabeli? <h4>
+					<h4>4. Jak brzmi polecenie do usunięcia wiersza z tabeli? </h4>
 					<label><input type="radio" value="12" name="choice4">DROP</label>
 					<label><input type="radio" value="13" name="choice4">DELETE</label>
 					<label><input type="radio" value="14" name="choice4">REMOVE<label>
 					<label><input type="radio" value="15" name="choice4">COLLAPSE</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>5. Które polecenie służy do zmiany NULLa na inną wartość w tabeli wynikowej? Możliwy jest wybór więcej niż jednej odpowiedzi.<h4>
+					<h4>5. Które polecenie służy do zmiany NULLa na inną wartość w tabeli wynikowej? Możliwy jest wybór więcej niż jednej odpowiedzi.</h4>
 					<label><input type="checkbox" value="16" name="choice[]">NVL</label>
 					<label><input type="checkbox" value="17" name="choice[]">REGEXP</label>
 					<label><input type="checkbox" value="18" name="choice[]">COALESCE</label>
 					<label><input type="checkbox" value="19" name="choice[]">NULLABLE</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>6. Który operator teorii zbiorów wybierze wspólne elementy obu tablic, razem z zduplikowanymi wartościami? Możliwy jest wybór więcej niż jednej odpowiedzi.<h4>
+					<h4>6. Który operator teorii zbiorów wybierze wspólne elementy obu tablic, razem z zduplikowanymi wartościami? Możliwy jest wybór więcej niż jednej odpowiedzi.</h4>
 					<label><input type="checkbox" value="20" name="choice[]">UNION</label>
 					<label><input type="checkbox" value="21" name="choice[]">DISTINCT</label>
 					<label><input type="checkbox" value="22" name="choice[]">UNION ALL</label>
 					<label><input type="checkbox" value="23" name="choice[]">MINUS</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>7. Jakie wiersze zwróci dana komenda: REGEXP_LIKE (first_name, '^Ste(v|ph)en$')? Możliwy jest wybór więcej niż jednej odpowiedzi.<h4>
+					<h4>7. Jakie wiersze zwróci dana komenda: REGEXP_LIKE (first_name, '^Ste(v|ph)en$')? Możliwy jest wybór więcej niż jednej odpowiedzi.</h4>
 					<label><input type="checkbox" value="24" name="choice[]">Stevphen</label>
 					<label><input type="checkbox" value="25" name="choice[]">Steven</label>
 					<label><input type="checkbox" value="26" name="choice[]">Steven$</label>
 					<label><input type="checkbox" value="27" name="choice[]">Stephen</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>8. Czym jest złączenie naturalne? <h4>
+					<h4>8. Czym jest złączenie naturalne? </h4>
 					<label><input type="radio" value="28" name="choice4">Przy warunku złączenia występuje znak równości</label>
 					<label><input type="radio" value="29" name="choice4">Gdy złączane kolumny mają tą samą nazwe</label>
 					<label><input type="radio" value="30" name="choice4">Gdy łączymy tabele z samą soba<label>
 					<label><input type="radio" value="31" name="choice4">Gdy dwie kolumny mają tą samą ilość wierszy</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>9. Jakie polecenie służy do sortowania wartości w tabeli wynikowej? <h4>
+					<h4>9. Jakie polecenie służy do sortowania wartości w tabeli wynikowej? </h4>
 					<label><input type="radio" value="32" name="choice4">ORDER</label>
 					<label><input type="radio" value="33" name="choice4">SORT</label>
 					<label><input type="radio" value="34" name="choice4">ORDER BY<label>
 					<label><input type="radio" value="35" name="choice4">SORT BY</label>
 				</fieldset>
 				<fieldset class="quiz-questions">
-					<h4>10. Jakie warunki musimy spełniać przy używaniu funkcji agregujących. Możliwa jest więcej niż jedna odpowiedź.<h4>
-					<label><input type="checkbox" value="24" name="choice[]">Kolumny zagregowane muszą znaleźć się w klauzyli ORDER BY</label>
-					<label><input type="checkbox" value="25" name="choice[]">Kolumny zagregowane muszą znaleźć się w klauzyli GROUP BY</label>
-					<label><input type="checkbox" value="26" name="choice[]">Musi pojawić się klauzula HAVING</label>
-					<label><input type="checkbox" value="27" name="choice[]">Musi pojawić się klauzula GROUP BY</label>
-				</fieldset>		
+					<h4>10. Jakie warunki musimy spełniać przy używaniu funkcji agregujących. Możliwa jest więcej niż jedna odpowiedź.</h4>
+					<label><input type="checkbox" value="36" name="choice[]">Kolumny zagregowane muszą znaleźć się w klauzyli ORDER BY</label>
+					<label><input type="checkbox" value="37" name="choice[]">Kolumny zagregowane muszą znaleźć się w klauzyli GROUP BY</label>
+					<label><input type="checkbox" value="38" name="choice[]">Musi pojawić się klauzula HAVING</label>
+					<label><input type="checkbox" value="39" name="choice[]">Musi pojawić się klauzula GROUP BY</label>
+				</fieldset>
+			<input id="send-quiz" type="button" value="Zakończ quiz" name="send-quiz" onclick="showAnswers()">	
 			</form>
 		</article>
 	</main>
