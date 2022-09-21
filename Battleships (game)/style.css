@@ -1,0 +1,33 @@
+.container{
+
+	outline: 1px solid red;
+	text-align: center;
+	height: 800px;
+	width: 1300px;
+	font-family: 'Inconsolata', monospace;
+	font-weiht: 700;
+}
+
+.pane{
+ 
+  display:inline-block;
+  margin: 40px 20px 20px;
+}
+
+.block{
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  display:inline-block;
+  border: 1px solid yellow;
+  cursor: pointer;
+}
+
+.nr-block{
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: text-top;
+  display:inline-block;
+  border: 1px solid black;
+}
