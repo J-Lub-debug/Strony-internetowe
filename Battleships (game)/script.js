@@ -2,6 +2,12 @@ window.onload = start_game; //Alias
 
 let shoot_phase_off = true;
 
+let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... 
+let setShipsClicks = 21;
+
+let nrOfClicks = 0;
+let prevFieldNr = 0;
+
 function start_game(){
 	
 	generate_panes();
@@ -15,7 +21,6 @@ function generate_panes(){
 }
 
 function generate_pane(paneName, functName){
-	
 	const fields = {
 		1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J",
 		11: "A", 12: "B", 13: "C", 14: "D", 15: "E", 16: "F", 17: "G", 18: "H", 19: "I", 20: "J",
@@ -31,8 +36,9 @@ function generate_pane(paneName, functName){
 	
 	const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 	
-	pane = "."
-	counter = 0;
+	let pane = "."  //innerHTML container
+	let counter = 0; //nr of field
+	let field = ""; //field identity class
 	
 	//Field Numbers
 	for(i = 1; i < 11; i++){
@@ -40,12 +46,13 @@ function generate_pane(paneName, functName){
 	}
 	pane += '<div style="clear:both;"></div>' //New line
 	
-	//Fields and alphabet for left pane - set_ship for right pane - shoot()
+	//Fields and alphabet for left pane - set_ship, for right pane - shoot()
 	for(j = 0; j < 10; j++){
 		for(i = 0; i < 10; i++){
 			if(i == 0) pane += alphabet[j] + " ";
 			counter++;
-			pane += '<div class = "block" onclick="' + functName + '(' + counter + ');"></div>';
+			field = "field" + counter;
+			pane += '<div class = "block ' + field + '" onclick="' + functName + '(' + counter + ');"value="false"></div>';
 			}
 		pane += '<div style="clear:both;"></div>'; //New line
 	}
@@ -54,15 +61,100 @@ function generate_pane(paneName, functName){
 }
 
 
-function set_ship(field){
+
+function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 	if(shoot_phase_off){
+		let field = "field" + fieldNr;
+		let fieldDiv = document.querySelector("#left-pane > ." + field); //const?
+		
+		if(fieldDiv.getAttribute("value") == "false"){
+			switch(phase){
+				case 0:
+					//Check border conditions
+					let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)];
+					
+					for (let x in wrongFields){
+						//document.querySelector(wrongFields[x]).style.backgroundColor = "black";
+						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+						wrongField.style.backgroundColor = "red";
+						wrongField.setAttribute("value", true);
+						wrongField.setAttribute("onclick",";");
+						wrongField.style.cursor = "default";
+					}
+				
+					fieldDiv.setAttribute("value", true);
+					fieldDiv.setAttribute("onclick",";");
+					fieldDiv.style.cursor = "default";
+					fieldDiv.style.backgroundColor = "black";
+					
+					setShipsClicks--;
+					
+					if(setShipsClicks == 17){
+						phase++;
+					}
+					break;
+				case 1:
+					if(nrOfClicks == 0){
+						fieldDiv.setAttribute("value", true);
+						fieldDiv.setAttribute("onclick",";");
+						fieldDiv.style.cursor = "default";
+						fieldDiv.style.backgroundColor = "black";
+						
+						setShipsClicks--;
+						nrOfClicks++;
+						prevFieldNr = fieldNr;
+					}
+					//+Add wrongFields to prevFieldNr
+					else if(nrOfClicks > 0 && ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10)) ){
+						
+						let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)];
+						
+						for (let x in wrongFields){
+							
+						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+						wrongField.style.backgroundColor = "red";
+						wrongField.setAttribute("value", true);
+						wrongField.setAttribute("onclick",";");
+						wrongField.style.cursor = "default";
+					}
+					
+					fieldDiv.setAttribute("value", true);
+					fieldDiv.setAttribute("onclick",";");
+					fieldDiv.style.cursor = "default";
+					fieldDiv.style.backgroundColor = "black";
+					
+					setShipsClicks--;
+					nrOfClicks++;
+					prevFieldNr = 0;
+					nrOfClicks = 0;
+					}
+					
+					if(setShipsClicks == 13){
+						phase++;
+						nrOfClicks = 0;
+					}
+					break;
+				
+				case 2:
+					//+Add wrongFields to prevFieldNr
+					//+3rd point will have diffrent wrong fields
+					break;
+				
+				case 3:
+					//+Add wrongFields to prevFieldNr
+					break;
+					
+			}
+			
+		}
+		
 		
 	}else return;
 }
 
-function shoot(field){
+function shoot(fieldNr){
 	if(shoot_phase_off) return;
 	
-	console.log("shoot: " + field);
+	console.log("shoot: " + fieldNr);
 }
 
