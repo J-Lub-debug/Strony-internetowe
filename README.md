@@ -23,5 +23,5 @@ https://en.wikipedia.org/wiki/Battleship_(game)
 
 
 Tools used:
-- HTML 5 % CSS
+- HTML 5 & CSS
 - Javascript
