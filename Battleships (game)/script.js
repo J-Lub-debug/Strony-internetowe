@@ -1,7 +1,7 @@
 //TO DO: 
 //- Do 4-block
-//- Refactor: Setting field color etc. in function ||| Calculate LIST of avaliable fields and check if click(fieldNR) containt it, instead of long if's
-
+//- +Check border conditions
+//FIX: getRightFieldsThree && setWrongFieldsThree (Vector of direction 4 cases)
 
 
 
@@ -15,6 +15,9 @@ let setShipsClicks = 21; //Number of clicks in set_ship phase determing the curr
 let nrOfClicks = 0;
 
 //+Turn into list
+let shipFields = [];
+let rightFields = [];
+
 let prevFieldNr = 0;
 let prevFieldNr2 = 0;
 let prevFieldNr3 = 0;
@@ -73,154 +76,164 @@ function generate_pane(paneName, functName){
 	
 }
 
+function setRightField(field){
+	let fieldDiv = document.querySelector("#left-pane > ." + field);
+					
+	fieldDiv.setAttribute("value", true);
+	fieldDiv.setAttribute("onclick",";");
+	fieldDiv.style.cursor = "default";
+	fieldDiv.style.backgroundColor = "black";
+					
+	setShipsClicks--;
+	nrOfClicks++;
+}
 
-//This function will need some Jesus lol
+function setWrongFieldsTwo(fieldNr){
+	let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)]
+	
+	for (let x in wrongFields){
+		let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+
+		if(wrongField.style.backgroundColor != "black"){
+			wrongField.style.backgroundColor = "red";
+			}
+			wrongField.setAttribute("value", true);
+			wrongField.setAttribute("onclick",";");
+			wrongField.style.cursor = "default";
+			}
+	
+}
+
+function setWrongFieldsThree(field1, field2){
+	
+	
+	let wrongFields = [];
+	if( (field2 - field1 < 10) && (field2 - field1 > -10)){ //org.version (field2 - field1 == 1) || (field2 - field1 == -1)
+		wrongFields.push("field" + (field1 + 10));
+		wrongFields.push("field" + (field1 - 10));
+		wrongFields.push("field" + (field2 + 10));
+		wrongFields.push("field" + (field2 - 10));
+	}
+	else if((field2 - field1 >= 10) && (field2 - field1 <= -10)){ //org.version (field2 - field1 == 10) || (field2 - field1 == -10)
+		wrongFields.push("field" + (field1 + 1));
+		wrongFields.push("field" + (field1 - 1));
+		wrongFields.push("field" + (field2 + 1));
+		wrongFields.push("field" + (field2 - 1));
+	}
+	for (let x in wrongFields){
+		let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+		
+		if(wrongField.style.backgroundColor != "black"){
+			wrongField.style.backgroundColor = "red";
+			}
+			wrongField.setAttribute("value", true);
+			wrongField.setAttribute("onclick",";");
+			wrongField.style.cursor = "default";
+			}
+	
+	
+}
+
+function getRightFieldsTwo(fields){
+	let rightFields = [];
+	for (x in fields){
+		rightFields.push(fields[x]-1);
+		rightFields.push(fields[x]+1);
+		rightFields.push(fields[x]+10);
+		rightFields.push(fields[x]-10);
+	}
+	return rightFields;
+}
+
+function getRightFieldsThree(field1, field2){ //+field2 - currently clicked field, field1 - previous field
+    //Direction of vector
+	let rightFields = [];
+	if( (field2 - field1 == 1) || (field2 - field1 == -1)){
+		rightFields.push(field2 + 1);
+		rightFields.push(field1 - 1);
+	}
+	else if((field2 - field1 == 10) || (field2 - field1 == -10)){
+		rightFields.push(field2 + 10);
+		rightFields.push(field1 - 10);
+	}
+	return rightFields;
+}
+
+
 function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 	if(shoot_phase_off){
 		let field = "field" + fieldNr;
-		let fieldDiv = document.querySelector("#left-pane > ." + field); //const?
+		
+		let fieldDiv = document.querySelector("#left-pane > ." + field);
 		
 		if(fieldDiv.getAttribute("value") == "false"){
 			switch(phase){
 				case 0:
-					//+Check border conditions
-					let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)];
-					
-					for (let x in wrongFields){
-						//document.querySelector(wrongFields[x]).style.backgroundColor = "black";
-						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
-						
-						if(wrongField.style.backgroundColor != "black"){
-							wrongField.style.backgroundColor = "red";
-						}
-						wrongField.setAttribute("value", true);
-						wrongField.setAttribute("onclick",";");
-						wrongField.style.cursor = "default";
-					}
-				
-					fieldDiv.setAttribute("value", true);
-					fieldDiv.setAttribute("onclick",";");
-					fieldDiv.style.cursor = "default";
-					fieldDiv.style.backgroundColor = "black";
-					
-					setShipsClicks--;
+					setRightField(field);
+					setWrongFieldsTwo(fieldNr);
 					
 					if(setShipsClicks == 17){
 						phase++;
+						nrOfClicks = 0;						
 					}
 					break;
 				case 1:
 					if(nrOfClicks == 0){
-						fieldDiv.setAttribute("value", true);
-						fieldDiv.setAttribute("onclick",";");
-						fieldDiv.style.cursor = "default";
-						fieldDiv.style.backgroundColor = "black";
+						setRightField(field);
 						
-						setShipsClicks--;
-						nrOfClicks++;
-						prevFieldNr = fieldNr;
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsTwo(shipFields);
 					}
-					//+Add wrongFields based on first prevFieldNr
-					else if(nrOfClicks > 0 && ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10)) ){
+					else if(nrOfClicks > 0 && rightFields.includes(fieldNr) ){
+						setRightField(field);
 						
-						let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10),
-										   "field" + (prevFieldNr - 1), "field" + (prevFieldNr + 1), "field" + (prevFieldNr + 10), "field" + (prevFieldNr - 10) ];
+						shipFields.push(fieldNr);
 						
-						for (let x in wrongFields){
-							
-						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
-						
-						if(wrongField.style.backgroundColor != "black"){
-							wrongField.style.backgroundColor = "red";
+						for (let x in shipFields){
+
+							setWrongFieldsTwo(shipFields[x]);
 						}
-						wrongField.setAttribute("value", true);
-						wrongField.setAttribute("onclick",";");
-						wrongField.style.cursor = "default";
-					}
-					
-					fieldDiv.setAttribute("value", true);
-					fieldDiv.setAttribute("onclick",";");
-					fieldDiv.style.cursor = "default";
-					fieldDiv.style.backgroundColor = "black";
-					
-					setShipsClicks--;
-					prevFieldNr = 0;
+						
+					shipFields = [];
+					rightFields = [];
 					nrOfClicks = 0;
 					}
 					
 					if(setShipsClicks == 11){
 						phase++;
-						nrOfClicks = 0;
 					}
 					break;
 				
 				case 2:
 					if(nrOfClicks == 0){
-						fieldDiv.setAttribute("value", true);
-						fieldDiv.setAttribute("onclick",";");
-						fieldDiv.style.cursor = "default";
-						fieldDiv.style.backgroundColor = "black";
+						setRightField(field)
 						
-						setShipsClicks--;
-						nrOfClicks++;
-						prevFieldNr = fieldNr;
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsTwo(shipFields);
 					}
-					else if(nrOfClicks == 1 && ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10)) ){
+					else if(nrOfClicks == 1 && rightFields.includes(fieldNr) ){
+						setRightField(field);
 						
-						let wrongFields;
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsThree(shipFields[0], shipFields[1]);
 						
-						if(prevFieldNr == (fieldNr+1) || prevFieldNr == (fieldNr-1)){
-							wrongFields = ["field" + (fieldNr + 10), "field" + (fieldNr - 10),
-										       "field" + (prevFieldNr + 10), "field" + (prevFieldNr - 10) ];
-						}
-						else if(prevFieldNr == (fieldNr+10) || prevFieldNr == (fieldNr-10)){
-							wrongFields = ["field" + (fieldNr + 1), "field" + (fieldNr - 1),
-										       "field" + (prevFieldNr + 1), "field" + (prevFieldNr - 1) ];
-						}
+						setWrongFieldsThree(shipFields[0], shipFields[1]);
 						
-						for (let x in wrongFields){
-							let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
-							
-							if(wrongField.style.backgroundColor != "black"){
-								wrongField.style.backgroundColor = "red";
-								}
-							wrongField.setAttribute("value", true);
-							wrongField.setAttribute("onclick",";");
-							wrongField.style.cursor = "default";
-							}
-						fieldDiv.setAttribute("value", true);
-						fieldDiv.setAttribute("onclick",";");
-						fieldDiv.style.cursor = "default";
-						fieldDiv.style.backgroundColor = "black";
-						
-						setShipsClicks--;
-						nrOfClicks++;
-						prevFieldNr2 = fieldNr;
+						console.log(rightFields);
 					}
 
-					else if(nrOfClicks > 1 && ((prevFieldNr2 == (fieldNr-1))) || (prevFieldNr2 == (fieldNr+1)) || (prevFieldNr2 == (fieldNr+10)) || (prevFieldNr2 == (fieldNr-10))
-												|| ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10))){
-						let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10),
-										   "field" + (prevFieldNr - 1), "field" + (prevFieldNr + 1), "field" + (prevFieldNr + 10), "field" + (prevFieldNr - 10) ];
+					else if(nrOfClicks > 1 && rightFields.includes(fieldNr)){
+						console.log("test");
+						setRightField(field);
 						
-						for (let x in wrongFields){
-							
-						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsThree(shipFields[0], shipFields[2]);
 						
-						if(wrongField.style.backgroundColor != "black"){
-							wrongField.style.backgroundColor = "red";
-						}
-						wrongField.setAttribute("value", true);
-						wrongField.setAttribute("onclick",";");
-						wrongField.style.cursor = "default";
-					}
+						setWrongFieldsTwo(shipFields[0]);
+						setWrongFieldsTwo(shipFields[2]);
+						
+		
 					
-					fieldDiv.setAttribute("value", true);
-					fieldDiv.setAttribute("onclick",";");
-					fieldDiv.style.cursor = "default";
-					fieldDiv.style.backgroundColor = "black";
-					
-					setShipsClicks--;
 					nrOfClicks = 0;
 					prevFieldNr = 0;
 					prevFieldNr2 = 0;
