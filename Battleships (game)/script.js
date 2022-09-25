@@ -1,7 +1,6 @@
 //TO DO: 
-//- Do 4-block
-//- +Check border conditions
-//FIX: getRightFieldsThree && setWrongFieldsThree (Vector of direction 4 cases)
+//+ Check border conditions for SET wrong fields
+
 
 
 
@@ -88,7 +87,7 @@ function setRightField(field){
 	nrOfClicks++;
 }
 
-function setWrongFieldsTwo(fieldNr){
+function setWrongFieldsTwo(fieldNr){//Set wrong fields Around
 	let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)]
 	
 	for (let x in wrongFields){
@@ -104,7 +103,7 @@ function setWrongFieldsTwo(fieldNr){
 	
 }
 
-function setWrongFieldsThree(field1, field2){
+function setWrongFieldsThree(field1, field2){ //Set wrong fields Sideways
 	
 	
 	let wrongFields = [];
@@ -148,13 +147,22 @@ function getRightFieldsTwo(fields){
 function getRightFieldsThree(field1, field2){ //+field2 - currently clicked field, field1 - previous field
     //Direction of vector
 	let rightFields = [];
-	if( (field2 - field1 == 1) || (field2 - field1 == -1)){
+	if((field2 - field1) == 1 || (field2 - field1) == 2){
 		rightFields.push(field2 + 1);
 		rightFields.push(field1 - 1);
 	}
-	else if((field2 - field1 == 10) || (field2 - field1 == -10)){
+	else if((field2 - field1 == -1) || (field2 - field1 == -2)){
+		rightFields.push(field1 + 1);
+		rightFields.push(field2 - 1);
+		
+	}
+	else if((field2 - field1 == 10) || (field2 - field1 == 20)){
 		rightFields.push(field2 + 10);
 		rightFields.push(field1 - 10);
+	}
+	else if((field2 - field1 == -10) || (field2 - field1 == -20)){
+		rightFields.push(field1 + 10);
+		rightFields.push(field2 - 10);
 	}
 	return rightFields;
 }
@@ -168,7 +176,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 		
 		if(fieldDiv.getAttribute("value") == "false"){
 			switch(phase){
-				case 0:
+				case 0: //1 block ships
 					setRightField(field);
 					setWrongFieldsTwo(fieldNr);
 					
@@ -177,7 +185,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						nrOfClicks = 0;						
 					}
 					break;
-				case 1:
+				case 1: //2 block ships
 					if(nrOfClicks == 0){
 						setRightField(field);
 						
@@ -194,9 +202,9 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 							setWrongFieldsTwo(shipFields[x]);
 						}
 						
-					shipFields = [];
-					rightFields = [];
-					nrOfClicks = 0;
+						shipFields = [];
+						rightFields = [];
+						nrOfClicks = 0;
 					}
 					
 					if(setShipsClicks == 11){
@@ -204,14 +212,14 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 					}
 					break;
 				
-				case 2:
+				case 2: //3 block ships
 					if(nrOfClicks == 0){
 						setRightField(field)
 						
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsTwo(shipFields);
 					}
-					else if(nrOfClicks == 1 && rightFields.includes(fieldNr) ){
+					else if(nrOfClicks == 1 && rightFields.includes(fieldNr)){
 						setRightField(field);
 						
 						shipFields.push(fieldNr);
@@ -219,107 +227,77 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						
 						setWrongFieldsThree(shipFields[0], shipFields[1]);
 						
-						console.log(rightFields);
 					}
 
 					else if(nrOfClicks > 1 && rightFields.includes(fieldNr)){
-						console.log("test");
 						setRightField(field);
 						
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[2]);
 						
 						setWrongFieldsTwo(shipFields[0]);
+						setWrongFieldsTwo(shipFields[1]);
 						setWrongFieldsTwo(shipFields[2]);
 						
-		
-					
-					nrOfClicks = 0;
-					prevFieldNr = 0;
-					prevFieldNr2 = 0;
-					}
-					
-					if(setShipsClicks == 5){
-						phase++;
+						shipFields=[];
+						rightFields=[];
 						nrOfClicks = 0;
+						}
+						if(setShipsClicks == 5){
+							phase++;
+							nrOfClicks = 0;
 					}
 					break;
 				
-				case 3: //+4-block
+				case 3: //4 block ship
 					if(nrOfClicks == 0){
-						fieldDiv.setAttribute("value", true);
-						fieldDiv.setAttribute("onclick",";");
-						fieldDiv.style.cursor = "default";
-						fieldDiv.style.backgroundColor = "black";
+						setRightField(field)
 						
-						setShipsClicks--;
-						nrOfClicks++;
-						prevFieldNr = fieldNr;
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsTwo(shipFields);
 					}
-					else if(nrOfClicks == 1 && ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10)) ){
+					else if(nrOfClicks == 1 && rightFields.includes(fieldNr)){
+						setRightField(field);
 						
-						let wrongFields;
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsThree(shipFields[0], shipFields[1]);
 						
-						if(prevFieldNr == (fieldNr+1) || prevFieldNr == (fieldNr-1)){
-							wrongFields = ["field" + (fieldNr + 10), "field" + (fieldNr - 10),
-										       "field" + (prevFieldNr + 10), "field" + (prevFieldNr - 10) ];
-						}
-						else if(prevFieldNr == (fieldNr+10) || prevFieldNr == (fieldNr-10)){
-							wrongFields = ["field" + (fieldNr + 1), "field" + (fieldNr - 1),
-										       "field" + (prevFieldNr + 1), "field" + (prevFieldNr - 1) ];
-						}
+						setWrongFieldsThree(shipFields[0], shipFields[1]);
+					}
+					else if(nrOfClicks == 2 && rightFields.includes(fieldNr)){
+						setRightField(field);
 						
-						for (let x in wrongFields){
-							let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
-							
-							if(wrongField.style.backgroundColor != "black"){
-								wrongField.style.backgroundColor = "red";
-								}
-							wrongField.setAttribute("value", true);
-							wrongField.setAttribute("onclick",";");
-							wrongField.style.cursor = "default";
-							}
-						fieldDiv.setAttribute("value", true);
-						fieldDiv.setAttribute("onclick",";");
-						fieldDiv.style.cursor = "default";
-						fieldDiv.style.backgroundColor = "black";
+						shipFields.push(fieldNr);
+						rightFields = getRightFieldsThree(shipFields[0], shipFields[2]);
 						
-						setShipsClicks--;
-						nrOfClicks++;
-						prevFieldNr2 = fieldNr;
+						setWrongFieldsThree(shipFields[0], shipFields[2]);
+						
+						console.log(rightFields); //empty array
 					}
 
-					else if(nrOfClicks > 1 && ((prevFieldNr2 == (fieldNr-1))) || (prevFieldNr2 == (fieldNr+1)) || (prevFieldNr2 == (fieldNr+10)) || (prevFieldNr2 == (fieldNr-10))
-												|| ((prevFieldNr == (fieldNr-1))) || (prevFieldNr == (fieldNr+1)) || (prevFieldNr == (fieldNr+10)) || (prevFieldNr == (fieldNr-10))){
-						let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10),
-										   "field" + (prevFieldNr - 1), "field" + (prevFieldNr + 1), "field" + (prevFieldNr + 10), "field" + (prevFieldNr - 10) ];
+					else if(nrOfClicks == 3 && rightFields.includes(fieldNr)){
 						
-						for (let x in wrongFields){
-							
-						let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+						setRightField(field);
+						shipFields.push(fieldNr);
 						
-						if(wrongField.style.backgroundColor != "black"){
-							wrongField.style.backgroundColor = "red";
-						}
-						wrongField.setAttribute("value", true);
-						wrongField.setAttribute("onclick",";");
-						wrongField.style.cursor = "default";
-					}
-					
-					fieldDiv.setAttribute("value", true);
-					fieldDiv.setAttribute("onclick",";");
-					fieldDiv.style.cursor = "default";
-					fieldDiv.style.backgroundColor = "black";
-					
-					setShipsClicks--;
-					nrOfClicks = 0;
-					prevFieldNr = 0;
-					prevFieldNr2 = 0;
+						rightFields = getRightFieldsThree(shipFields[0], shipFields[3]);
+						
+						setWrongFieldsTwo(shipFields[0]);
+						setWrongFieldsTwo(shipFields[1]);
+						setWrongFieldsTwo(shipFields[2]);
+						setWrongFieldsTwo(shipFields[3]);
+						
+						shipFields=[]
+						rightFields=[]
+						nrOfClicks = 0;
 					}
 					
 					if(setShipsClicks == 1){
 						phase++;
 						nrOfClicks = 0;
+						
+						setEnemyShips();
+						shoot_phase_off = false;
 					}
 					break;
 					
@@ -329,6 +307,11 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 		
 		
 	}else return;
+}
+
+function setEnemyShips(){
+	
+	//hideEnemyShips();
 }
 
 
