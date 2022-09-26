@@ -1,19 +1,19 @@
 //TO DO: 
 //+ Check border conditions for SET wrong fields
 //+ Add random field placement for enemy
-
+//+ End of game when HP == 1 (all your ships destroyed) or SetShipClisk == 1(all enemy ships destroyed) 
 
 
 
 window.onload = start_game; //Alias to run the game on page load
 
-let shoot_phase_off = false; //true
+let shoot_phase_off = true; //true
 
 let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... 
 let setShipsClicks = 21; //Number of clicks in set_ship phase determing the current phase || Number of clicks determing END of the game in shoot_phase
 let hp = 21; //Number of remaining hitpoints 
 
-let nrOfClicks = 0;
+let nrOfClicks = 0; //Number of already performed correct clicks in given phase
 
 let shipFields = [];
 let rightFields = [];
@@ -73,6 +73,9 @@ function generate_pane(paneName, functName){
 	}
 	document.getElementById(paneName).innerHTML = pane;
 	
+}
+
+function set_enemy_ships(){
 }
 
 function shoot_random_field(){
@@ -152,7 +155,7 @@ function setWrongFieldsTwo(fieldNr){//Set wrong fields Around
 		if(wrongField.style.backgroundColor != "black"){
 			wrongField.style.backgroundColor = "red";
 			}
-			wrongField.setAttribute("value", true);
+			//wrongField.setAttribute("value", true);
 			wrongField.setAttribute("onclick",";");
 			wrongField.style.cursor = "default";
 			}
@@ -181,7 +184,7 @@ function setWrongFieldsThree(field1, field2){ //Set wrong fields Sideways
 		if(wrongField.style.backgroundColor != "black"){
 			wrongField.style.backgroundColor = "red";
 			}
-			wrongField.setAttribute("value", true);
+			//wrongField.setAttribute("value", true);
 			wrongField.setAttribute("onclick",";");
 			wrongField.style.cursor = "default";
 			}
@@ -365,6 +368,10 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 }
 
 function setEnemyShips(){
+	
+	//Set random placement
+	//set_enemy_ships();
+	
 	//1 block
 	setEnemyField(5);
 	setEnemyField(88);
@@ -398,6 +405,7 @@ function setEnemyShips(){
 	setEnemyField(25);
 	
 	//hideEnemyShips();
+	
 }
 
 
