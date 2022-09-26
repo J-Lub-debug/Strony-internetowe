@@ -9,18 +9,15 @@ window.onload = start_game; //Alias to run the game on page load
 let shoot_phase_off = true;
 
 let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... 
-let setShipsClicks = 21; //Number of clicks in set_ship phase determing the current phase
+let setShipsClicks = 21; //Number of clicks in set_ship phase determing the current phase || Number of clicks determing END of the game in shoot_phase
+let hp = 21; //Number of remaining hitpoints 
 
 let nrOfClicks = 0;
 
-//+Turn into list
 let shipFields = [];
 let rightFields = [];
 
-let prevFieldNr = 0;
-let prevFieldNr2 = 0;
-let prevFieldNr3 = 0;
-
+let shotRandFields = []; //fields already shot at by ENEMY PC
 
 const fields = {
 	1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J",
@@ -44,6 +41,7 @@ function generate_panes(){
 	
 	generate_pane("left-pane", "set_ship");
 	generate_pane("right-pane", "shoot");
+	setEnemyShips();
 
 }
 
@@ -73,6 +71,62 @@ function generate_pane(paneName, functName){
 	}
 	document.getElementById(paneName).innerHTML = pane;
 	
+}
+
+function shoot_random_field(){
+	let leftFieldNr = Math.floor(Math.random() * 100) + 1;
+	
+	while(shotRandFields.includes(leftFieldNr)){
+		leftFieldNr = Math.floor(Math.random() * 100) + 1;
+		}
+		shotRandFields.push(leftFieldNr);
+	
+	while(isShipHit(leftFieldNr, "left")){
+		cosnole.log("test");
+		leftFieldNr = Math.floor(Math.random() * 100) + 1;
+		while(shotRandFields.includes(leftFieldNr)){
+			leftFieldNr = Math.floor(Math.random() * 100) + 1;
+		}
+		shotRandFields.push(leftFieldNr);
+		console.log(leftFieldNr);
+		
+	}
+	
+}
+
+function isShipHit(fieldNr, paneSide){
+	let paneSelector = "#" + paneSide + "-pane > .";
+	let field = "field" + fieldNr;
+	let fieldDiv = document.querySelector(paneSelector + field);
+	let isShip = fieldDiv.getAttribute("value");
+	
+	
+	if(isShip == "true"){
+		fieldDiv.setAttribute("value", false);
+		fieldDiv.style.cursor = "default";
+		fieldDiv.setAttribute("onclick",";");
+		fieldDiv.style.backgroundColor = "aqua";
+		isShip = true;
+	}
+	else{
+		fieldDiv.setAttribute("value", false);
+		fieldDiv.style.cursor = "default";
+		fieldDiv.setAttribute("onclick",";");
+		fieldDiv.style.backgroundColor = "red";
+		isShip = false;
+	}
+	
+	return isShip;
+}
+
+function setEnemyField(fieldNr){
+	let field = "field" + fieldNr;
+	let fieldDiv = document.querySelector("#right-pane > ." + field);
+					
+	fieldDiv.setAttribute("value", true);
+;
+	fieldDiv.style.backgroundColor = "black";
+
 }
 
 function setRightField(field){
@@ -272,7 +326,6 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						
 						setWrongFieldsThree(shipFields[0], shipFields[2]);
 						
-						console.log(rightFields); //empty array
 					}
 
 					else if(nrOfClicks == 3 && rightFields.includes(fieldNr)){
@@ -292,11 +345,11 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						nrOfClicks = 0;
 					}
 					
-					if(setShipsClicks == 1){
+					if(setShipsClicks == 1){ //END of set_ship Phase
 						phase++;
 						nrOfClicks = 0;
 						
-						setEnemyShips();
+						setShipsClicks = 21;
 						shoot_phase_off = false;
 					}
 					break;
@@ -310,6 +363,37 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 }
 
 function setEnemyShips(){
+	//1 block
+	setEnemyField(5);
+	setEnemyField(88);
+	setEnemyField(72);
+	setEnemyField(1);
+	
+	//2 block
+	setEnemyField(20);
+	setEnemyField(30);
+	
+	setEnemyField(55);
+	setEnemyField(45);
+	
+	setEnemyField(74);
+	setEnemyField(75);
+	
+	//3 block
+	setEnemyField(70);
+	setEnemyField(60);
+	setEnemyField(50);
+	
+	setEnemyField(94);
+	setEnemyField(95);
+	setEnemyField(96);
+	
+	
+	//4 block
+	setEnemyField(22);
+	setEnemyField(23);
+	setEnemyField(24);
+	setEnemyField(25);
 	
 	//hideEnemyShips();
 }
@@ -319,6 +403,10 @@ function setEnemyShips(){
 function shoot(fieldNr){
 	if(shoot_phase_off) return;
 	
-	console.log("shoot: " + fieldNr);
+	if(isShipHit(fieldNr, "right")){
+		return;
+	}else{
+		shoot_random_field();
+	}
 }
 
