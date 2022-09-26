@@ -1,12 +1,13 @@
 //TO DO: 
 //+ Check border conditions for SET wrong fields
+//+ Add random field placement for enemy
 
 
 
 
 window.onload = start_game; //Alias to run the game on page load
 
-let shoot_phase_off = true;
+let shoot_phase_off = false; //true
 
 let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... 
 let setShipsClicks = 21; //Number of clicks in set_ship phase determing the current phase || Number of clicks determing END of the game in shoot_phase
@@ -18,6 +19,7 @@ let shipFields = [];
 let rightFields = [];
 
 let shotRandFields = []; //fields already shot at by ENEMY PC
+let nearbyFields = [-10, -1, 1, 10]; //Nearby fields ENEMY PC can shoot at once it hits target
 
 const fields = {
 	1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J",
@@ -82,10 +84,10 @@ function shoot_random_field(){
 		shotRandFields.push(leftFieldNr);
 	
 	while(isShipHit(leftFieldNr, "left")){
-		cosnole.log("test");
-		leftFieldNr = Math.floor(Math.random() * 100) + 1;
-		while(shotRandFields.includes(leftFieldNr)){
-			leftFieldNr = Math.floor(Math.random() * 100) + 1;
+
+		leftFieldNr = shotRandFields[Math.floor(Math.random() * shotRandFields.length)] + nearbyFields[Math.floor(Math.random() * 4)]; // Rand already shot fieldNr + Rand DIRECTION(-1/1/-10/10) 
+		while(shotRandFields.includes(leftFieldNr)){ //randomize until it find field that haven't been shot yet.
+			leftFieldNr = shotRandFields[Math.floor(Math.random() * shotRandFields.length)] + nearbyFields[Math.floor(Math.random() * 4)]; //leftFieldNr = Math.floor(Math.random() * 100) + 1; //Random field
 		}
 		shotRandFields.push(leftFieldNr);
 		console.log(leftFieldNr);
@@ -124,7 +126,7 @@ function setEnemyField(fieldNr){
 	let fieldDiv = document.querySelector("#right-pane > ." + field);
 					
 	fieldDiv.setAttribute("value", true);
-;
+
 	fieldDiv.style.backgroundColor = "black";
 
 }
