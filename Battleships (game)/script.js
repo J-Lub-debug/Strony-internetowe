@@ -1,5 +1,5 @@
 //TO DO: 
-//+ Check border conditions for SET wrong fields
+//+ Check border conditions for SET wrong fields three
 //+ Add random field placement for enemy
 //+ End of game when HP == 1 (all your ships destroyed) or SetShipClisk == 1(all enemy ships destroyed) 
 
@@ -7,9 +7,9 @@
 
 window.onload = start_game; //Alias to run the game on page load
 
-let shoot_phase_off = true; //true
+let shoot_phase_off = true; //true => set ships phase | false => shoot phase
 
-let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... 
+let phase = 0; // [phase 0] - 1 block x 4 || [phase 1] - 2 block x 3 ... END OF set ship phase
 let setShipsClicks = 21; //Number of clicks in set_ship phase determing the current phase || Number of clicks determing END of the game in shoot_phase
 let hp = 21; //Number of remaining hitpoints 
 
@@ -20,6 +20,7 @@ let rightFields = [];
 
 let shotRandFields = []; //fields already shot at by ENEMY PC
 let nearbyFields = [-10, -1, 1, 10]; //Nearby fields ENEMY PC can shoot at once it hits target
+
 
 const fields = {
 	1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J",
@@ -75,7 +76,59 @@ function generate_pane(paneName, functName){
 	
 }
 
-function set_enemy_ships(){
+function rand_set_enemy_ships(){
+	let wrongFields = [];
+	let enemyShipFields = [];
+	let enemyPhase = 0;
+	for(let i = 1; i < 21; i++){
+		let fieldNr = Math.floor(Math.random() * 100) + 1;
+		switch(enemyPhase){
+			case 0:
+				while(wrongFields.includes("field" + fieldNr)){
+					fieldNr = Math.floor(Math.random() * 100) + 1;
+				}
+				setEnemyField(fieldNr);
+				enemyShipFields.push(fieldNr);
+				wrongFields = wrongFields.concat(setWrongFieldsTwo(fieldNr, "right"));
+				wrongFields.push("field" + fieldNr);
+				
+				if(i == 4){
+					enemyPhase++;
+				}
+			case 1:
+				if(i%2 == 0){
+					while(wrongFields.includes("field" + fieldNr)){
+						
+						fieldNr = Math.floor(Math.random() * 100) + 1;
+						}
+						setEnemyField(fieldNr);
+						enemyShipFields.push(fieldNr);
+						wrongFields = wrongFields.concat(setWrongFieldsTwo(fieldNr, "right"));
+						wrongFields.push("field" + fieldNr);
+						
+						enemyShipFields.push(fieldNr);
+
+				}else{
+
+					
+					fieldNr = enemyShipFields[0] + nearbyFields[Math.floor(Math.random() * 4)];
+						
+					setEnemyField(fieldNr);
+					enemyShipFields.push(fieldNr);
+					wrongFields = wrongFields.concat(setWrongFieldsTwo(fieldNr, "right"));
+					wrongFields.push("field" + fieldNr);
+					
+					enemyShipFields = [];
+				}
+				if(i == 10){
+					enemyPhase++;
+				}
+				
+
+		}
+	}
+	
+	
 }
 
 function shoot_random_field(){
@@ -93,7 +146,7 @@ function shoot_random_field(){
 			leftFieldNr = shotRandFields[Math.floor(Math.random() * shotRandFields.length)] + nearbyFields[Math.floor(Math.random() * 4)]; //leftFieldNr = Math.floor(Math.random() * 100) + 1; //Random field
 		}
 		shotRandFields.push(leftFieldNr);
-		console.log(leftFieldNr);
+	
 		
 	}
 	
@@ -146,24 +199,35 @@ function setRightField(field){
 	nrOfClicks++;
 }
 
-function setWrongFieldsTwo(fieldNr){//Set wrong fields Around
+function setWrongFieldsTwo(fieldNr, paneSide){//Set wrong fields Around
 	let wrongFields = ["field" + (fieldNr - 1), "field" + (fieldNr + 1), "field" + (fieldNr + 10), "field" + (fieldNr - 10)]
+	let paneSelector = "#" + paneSide + "-pane > .";
 	
 	for (let x in wrongFields){
-		let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+		let wrongField = document.querySelector(paneSelector + wrongFields[x]);
+		let wrongFieldNr = parseInt(wrongFields[x].replace("field", ''));
+		
 
-		if(wrongField.style.backgroundColor != "black"){
+		if(wrongFieldNr < 1 || wrongFieldNr > 100) {
+			//OUT OF BOUNDS, do nothing
+		}
+		else if(wrongField.style.backgroundColor != "black"){
 			wrongField.style.backgroundColor = "red";
+			if(paneSide == "right"){
+			}
+			else{
+				wrongField.setAttribute("onclick",";");
+				wrongField.style.cursor = "default";
 			}
 			//wrongField.setAttribute("value", true);
-			wrongField.setAttribute("onclick",";");
-			wrongField.style.cursor = "default";
 			}
+		}
+	return wrongFields;
 	
 }
 
-function setWrongFieldsThree(field1, field2){ //Set wrong fields Sideways
-	
+function setWrongFieldsThree(field1, field2, paneSide){ //Set wrong fields Sideways
+	let paneSelector = "#" + paneSide + "-pane > .";
 	
 	let wrongFields = [];
 	if( (field2 - field1 < 10) && (field2 - field1 > -10)){ //org.version (field2 - field1 == 1) || (field2 - field1 == -1)
@@ -179,7 +243,7 @@ function setWrongFieldsThree(field1, field2){ //Set wrong fields Sideways
 		wrongFields.push("field" + (field2 - 1));
 	}
 	for (let x in wrongFields){
-		let wrongField = document.querySelector("#left-pane > ." + wrongFields[x]);
+		let wrongField = document.querySelector(paneSelector + wrongFields[x]);
 		
 		if(wrongField.style.backgroundColor != "black"){
 			wrongField.style.backgroundColor = "red";
@@ -188,6 +252,7 @@ function setWrongFieldsThree(field1, field2){ //Set wrong fields Sideways
 			wrongField.setAttribute("onclick",";");
 			wrongField.style.cursor = "default";
 			}
+	return wrongFields;
 	
 	
 }
@@ -237,7 +302,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 			switch(phase){
 				case 0: //1 block ships
 					setRightField(field);
-					setWrongFieldsTwo(fieldNr);
+					setWrongFieldsTwo(fieldNr, "left");
 					
 					if(setShipsClicks == 17){
 						phase++;
@@ -258,7 +323,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						
 						for (let x in shipFields){
 
-							setWrongFieldsTwo(shipFields[x]);
+							setWrongFieldsTwo(shipFields[x], "left");
 						}
 						
 						shipFields = [];
@@ -284,7 +349,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[1]);
 						
-						setWrongFieldsThree(shipFields[0], shipFields[1]);
+						setWrongFieldsThree(shipFields[0], shipFields[1], "left");
 						
 					}
 
@@ -294,9 +359,9 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[2]);
 						
-						setWrongFieldsTwo(shipFields[0]);
-						setWrongFieldsTwo(shipFields[1]);
-						setWrongFieldsTwo(shipFields[2]);
+						setWrongFieldsTwo(shipFields[0], "left");
+						setWrongFieldsTwo(shipFields[1], "left");
+						setWrongFieldsTwo(shipFields[2], "left");
 						
 						shipFields=[];
 						rightFields=[];
@@ -321,7 +386,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[1]);
 						
-						setWrongFieldsThree(shipFields[0], shipFields[1]);
+						setWrongFieldsThree(shipFields[0], shipFields[1], "left");
 					}
 					else if(nrOfClicks == 2 && rightFields.includes(fieldNr)){
 						setRightField(field);
@@ -329,7 +394,7 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						shipFields.push(fieldNr);
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[2]);
 						
-						setWrongFieldsThree(shipFields[0], shipFields[2]);
+						setWrongFieldsThree(shipFields[0], shipFields[2], "left");
 						
 					}
 
@@ -340,10 +405,10 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 						
 						rightFields = getRightFieldsThree(shipFields[0], shipFields[3]);
 						
-						setWrongFieldsTwo(shipFields[0]);
-						setWrongFieldsTwo(shipFields[1]);
-						setWrongFieldsTwo(shipFields[2]);
-						setWrongFieldsTwo(shipFields[3]);
+						setWrongFieldsTwo(shipFields[0], "left");
+						setWrongFieldsTwo(shipFields[1], "left");
+						setWrongFieldsTwo(shipFields[2], "left");
+						setWrongFieldsTwo(shipFields[3], "left");
 						
 						shipFields=[]
 						rightFields=[]
@@ -370,9 +435,10 @@ function set_ship(fieldNr){ //MAX: 21 (fields, numberOf) 4x1 3x2 2x3 1x4
 function setEnemyShips(){
 	
 	//Set random placement
-	//set_enemy_ships();
+	//rand_set_enemy_ships();
 	
 	//1 block
+	
 	setEnemyField(5);
 	setEnemyField(88);
 	setEnemyField(72);
@@ -404,10 +470,16 @@ function setEnemyShips(){
 	setEnemyField(24);
 	setEnemyField(25);
 	
+	
 	//hideEnemyShips();
+	//?Is needed?
+	setShipsClicks = 21;
+	nrOfClicks = 0;
+	phase = 0;
+	shipFields = [];
+	rightFields = [];
 	
 }
-
 
 
 function shoot(fieldNr){
